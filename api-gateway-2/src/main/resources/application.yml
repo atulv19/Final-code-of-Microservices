@@ -1,0 +1,30 @@
+server:
+  port: 5555
+
+spring:
+  application:
+    name: API-GATEWAY
+
+  cloud:
+    gateway:
+      routes:
+        - id: authservice-api
+          uri: lb://AUTHSERVICE
+          predicates:
+            - Path=/auth/**
+          filters:
+            - RewritePath=/auth/(?<segment>.*), /${segment}
+
+        - id: microservice-api
+          uri: lb://MICROSERVICE-1
+          predicates:
+            - Path=/micro1/**
+          filters:
+            - RewritePath=/micro1/(?<segment>.*), /${segment}
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
